@@ -10,11 +10,13 @@
   "dependencies": {
     "bootstrap": "^4.5.3",
     "core-js": "^3.6.5",
+    "firebase": "^8.2.0",
     "jquery": "^3.5.1",
+    "marked": "^1.2.6",
     "popper.js": "^1.16.1",
     "sass-loader": "^10.1.0",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.0-0"
+    "vue-router": "^4.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -44,5 +46,17 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "description": "## Project setup ``` npm install ```",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GreyGoat93/learning-vue3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GreyGoat93/learning-vue3/issues"
+  },
+  "homepage": "https://github.com/GreyGoat93/learning-vue3#readme"
 }

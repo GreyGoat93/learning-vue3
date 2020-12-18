@@ -1,27 +1,28 @@
 <template>
-    <div class="container">
-        <h1>Takvim</h1>
-        <div class="info-switch">
-            <h2>{{currentMonthName}} / {{shownYear}}</h2>
-            <div class="switch">
-                <button @click="prevMonth">&lt; Prev</button>
-                <button @click="nextMonth">Next &gt;</button>
-            </div>
+<div class="cont">
+    <h1>Takvim</h1>
+    <div class="info-switch">
+        <h2>{{currentMonthName}} / {{shownYear}}</h2>
+        <div class="switch">
+            <button @click="prevMonth">&lt; Prev</button>
+            <button @click="nextMonth">Next &gt;</button>
         </div>
-        <section class="days">
-            <div class="day" v-for="day in days" :key="day">
-                <p>{{day}}</p>
-            </div>
-        </section>
-        <section class="days">
-            <div class="day" v-for="gap in gapOfFirstWeek(shownMonth, shownYear)" :key="gap">
-                <p>{{day}}</p>
-            </div>
-            <div class="day text-white" v-for="day in daysInMonth(shownMonth, shownYear)" :key="day" :class="{'bg-green': checkIfToday(new Date(), day), 'bg-black': !checkIfToday(new Date(), day)}">
-                <p>{{day}}</p>
-            </div>
-        </section>
     </div>
+    <section class="days">
+        <div class="day" v-for="day in days" :key="day">
+            <p>{{day}}</p>
+        </div>
+    </section>
+    <transition-group name="fade">
+    <section :key="shownMonth" class="days days-nums">
+        <div class="day" v-for="gap in gapOfFirstWeek(shownMonth, shownYear)" :key="gap">
+        </div>
+        <div class="day text-white" v-for="day in daysInMonth(shownMonth, shownYear)" :key="day" :class="{'bg-green': checkIfToday(new Date(), day), 'bg-black': !checkIfToday(new Date(), day)}">
+            <p>{{day}}</p>
+        </div>
+    </section>
+    </transition-group>
+</div>  
 </template>
 
 <script>
@@ -37,13 +38,15 @@ export default {
                 return date;
             }
         },
-        currentMonthName(){
-            return new Date(this.shownYear, this.shownMonth).toLocaleString('default', {month: 'long'});
+        currentMonthName : {
+            get(){
+                return new Date(this.shownYear, this.shownMonth).toLocaleString('default', {month: 'long'});
+            }
         },
     },
     data(){
         return {
-            days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            days: ['Pzr', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
             currentMonth: new Date().getMonth(),
             currentYear: new Date().getFullYear(),
             shownMonth: new Date().getMonth(),
@@ -53,8 +56,6 @@ export default {
     },
     methods : {
         daysInMonth(month, year){
-            console.log(month);
-            console.log(year);
             return new Date(year, month + 1, 0).getDate();
         },
         gapOfFirstWeek(month, year){
@@ -65,9 +66,6 @@ export default {
             let checkYears = date.getFullYear() == this.shownYear;
             let checkMonths = date.getMonth() == this.shownMonth;
             let checkDays = day == this.currentDate[2];
-            // console.log(day);
-            // console.log(this.currentDate);
-            // console.log(checkDays, checkMonths, checkYears)
             return checkYears && checkMonths && checkDays;
         },
         prevMonth(){
@@ -78,7 +76,6 @@ export default {
             else{
                 this.shownMonth--;
             }
-            this.currentMonthName();
         },
         nextMonth(){
             if(this.shownMonth == 11){
@@ -88,7 +85,6 @@ export default {
             else{
                 this.shownMonth++;
             }
-            this.currentMonthName();
         },
     }
 }
@@ -99,6 +95,12 @@ export default {
 
     h1 {
         text-align: center;
+    }
+
+    .cont {
+        width: 90%;
+        margin: 0 auto;
+        position: relative;
     }
 
     .info-switch {
@@ -167,4 +169,19 @@ export default {
         color: #fff;
     }
 
+    .days-nums {
+        position: absolute;
+        width: 100%;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity 0.33s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+        opacity: 0;
+    }
+
+    
 </style>
