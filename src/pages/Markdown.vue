@@ -1,59 +1,59 @@
 <template>
-    <div class="cont">
-        <h1>Markdown App</h1>
-        <section>
-            <article class="mark-left">
-                <textarea :value="text" @input="renderText" ref="textarea"></textarea>
-            </article>
-            <article class="mark-right" v-html="markedText">
-            </article>
-        </section>
-    </div>
+  <div class="cont">
+    <h1>Markdown App</h1>
+    <section>
+      <article class="mark-left">
+        <textarea :value="text" @input="renderText" ref="textarea"></textarea>
+      </article>
+      <article class="mark-right" v-html="markedText"></article>
+    </section>
+  </div>
 </template>
 
 <script>
-import debounce from '../utilities/mixins/debounce.js'
+import debounce from "../utilities/mixins/debounce.js";
 export default {
-    mixins: [debounce],
-    data(){
-        return{
-            text: "",
-            timeout: "",
-        }
-    },
-    methods: {
-        renderText(e){
-            const task = () => (this.text = e.target.value);
-            this.debounce(task)
-        },
-    },
-    mounted(){
-        this.$refs.textarea.focus();
+  mixins: [debounce],
+  data() {
+    return {
+      text: "",
+      timeout: ""
+    };
+  },
+  methods: {
+    renderText(e) {
+      const task = () => (this.text = e.target.value);
+      this.debounce(task);
     }
-}
+  },
+  mounted() {
+    this.$refs.textarea.focus();
+  }
+};
 </script>
 
 <style scoped>
-    .cont {
-        margin: 0 auto;
-    }
+.cont {
+  margin: 0 auto;
+}
 
-    h1 {
-        text-align: center;
-    }
+h1 {
+  text-align: center;
+}
 
-    section {
-        width: 80%;
-        margin: 0 auto;
-        display: flex;
-        height: 400px;
-    }
-    article {
-        width: 50%;
-    }
+section {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  height: 400px;
+}
 
-    textarea {
-        width: 100%;
-        height: 100%;
-    }
+article {
+  width: 50%;
+}
+
+textarea {
+  width: 100%;
+  height: 100%;
+}
 </style>

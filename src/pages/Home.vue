@@ -1,17 +1,15 @@
 <template>
-    <div>
-        <h1>Welcome To My App</h1>
-    </div>
+  <div>
+    <h1>Welcome To My App</h1>
+  </div>
 </template>
 
 <script>
-export default {
-    
-}
+export default {};
 </script>
 
 <style scoped>
-    h1 {
-        text-align: center;
-    }
+h1 {
+  text-align: center;
+}
 </style>
