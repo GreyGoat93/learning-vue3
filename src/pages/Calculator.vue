@@ -31,7 +31,8 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted, ref } from "vue";
+import { ref } from "vue";
+import useWindowEvent from "../utilities/composition/useWindowEvent";
 export default {
   setup() {
     const calculatorData1 = ref("0");
@@ -109,11 +110,11 @@ export default {
     }
 
     function handleKeydown(e) {
+      console.log("sex");
       press(e.key.toUpperCase());
     }
 
-    onMounted(() => window.addEventListener("keydown", handleKeydown));
-    onUnmounted(() => window.removeEventListener("keydown", handleKeydown));
+    useWindowEvent("keydown", handleKeydown);
 
     return {
       calculatorData1,

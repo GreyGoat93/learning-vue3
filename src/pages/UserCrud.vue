@@ -1,6 +1,4 @@
-<template>
-  modal
-</template>
+<template> <div>DASDASD</div></template>
 
 <script>
 export default {};

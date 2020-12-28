@@ -66,7 +66,7 @@ export default {
         });
     },
     closeLogin() {
-      this.$emit("close-login-modal");
+      this.$store.commit("setToggleLogin", false);
     }
   },
   mounted() {

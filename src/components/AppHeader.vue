@@ -6,10 +6,10 @@
         {{ route.name }}
       </router-link>
 
-      <button v-if="!isSignedIn" @click="$emit('open-login-modal')">
+      <button v-if="isLoggedIn == false" @click="openLogin">
         Login
       </button>
-      <button v-if="isSignedIn" @click="logout()">
+      <button v-if="isLoggedIn == true" @click="logout()">
         Logout
       </button>
     </nav>
@@ -19,9 +19,6 @@
 <script>
 import firebase from "../utilities/firebase";
 export default {
-  props: {
-    isSignedIn: Boolean
-  },
   data() {
     return {
       routeList: [
@@ -29,21 +26,32 @@ export default {
         { path: "/calendar", name: "Calendar" },
         { path: "/markdown", name: "Markdown" },
         { path: "/slider", name: "Slider" },
-        { path: "/calculator", name: "Calculator" }
+        { path: "/calculator", name: "Calculator" },
+        { path: "/chats", name: "Chat" },
+        { path: "/usercrud", name: "User Crud" }
       ]
     };
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
+    }
   },
   methods: {
     logout() {
       firebase
         .auth()
         .signOut()
-        .then(function() {
+        .then(() => {
           console.log("successfull");
+          this.$router.go();
         })
         .catch(function(error) {
           console.log(error);
         });
+    },
+    openLogin() {
+      this.$store.commit("setToggleLogin", true);
     }
   }
 };

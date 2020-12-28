@@ -3,7 +3,7 @@
     <h1>Markdown App</h1>
     <section>
       <article class="mark-left">
-        <textarea :value="text" @input="renderText" ref="textarea"></textarea>
+        <textarea :input="text" @input="renderText" ref="textarea"></textarea>
       </article>
       <article class="mark-right" v-html="markedText"></article>
     </section>
@@ -11,23 +11,32 @@
 </template>
 
 <script>
-import debounce from "../utilities/mixins/debounce.js";
+import useDebounce from "../utilities/composition/useDebounce.js";
+import marked from "marked";
 export default {
-  mixins: [debounce],
   data() {
     return {
       text: "",
-      timeout: ""
+      debounce: ""
     };
+  },
+  mounted() {
+    this.debounce = useDebounce();
+    this.$refs.textarea.focus();
   },
   methods: {
     renderText(e) {
-      const task = () => (this.text = e.target.value);
-      this.debounce(task);
+      const task = () => {
+        this.text = e.target.value;
+        console.log("sexxxx");
+      };
+      this.debounce(task, 2000);
     }
   },
-  mounted() {
-    this.$refs.textarea.focus();
+  computed: {
+    markedText() {
+      return marked(this.text);
+    }
   }
 };
 </script>
@@ -47,7 +56,6 @@ section {
   display: flex;
   height: 400px;
 }
-
 article {
   width: 50%;
 }
