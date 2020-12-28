@@ -28,7 +28,6 @@ export default {
     renderText(e) {
       const task = () => {
         this.text = e.target.value;
-        console.log("sexxxx");
       };
       this.debounce(task, 2000);
     }

@@ -28,7 +28,7 @@ export default {
         { path: "/slider", name: "Slider" },
         { path: "/calculator", name: "Calculator" },
         { path: "/chats", name: "Chat" },
-        { path: "/usercrud", name: "User Crud" }
+        { path: "/user-crud", name: "User Crud" }
       ]
     };
   },

@@ -2,15 +2,15 @@
   <app-header />
   <div class="cont">
     <div class="inner-container">
-      <transition name="fade">
-        <router-view></router-view>
-      </transition>
+      <!-- <transition name="fade"> -->
+      <router-view></router-view>
+      <!-- </transition> -->
     </div>
   </div>
   <teleport to="body">
-    <transition name="fade">
-      <login-modal v-if="toggleLogin" />
-    </transition>
+    <!-- <transition name="fade"> -->
+    <login-modal v-if="toggleLogin" />
+    <!-- </transition> -->
   </teleport>
 </template>
 

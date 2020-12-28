@@ -16,13 +16,13 @@ const routes = [
     { path: "/markdown", name: "Markdown", component: Markdown },
     { path: "/slider", name: "Slider", component: Slider },
     { path: "/calculator", name: "Calculator", component: Calculator },
+    { path: "/user-crud", name: "UserCrud", component: UserCrud },
     {
         path: "/chats",
         name: "Chats",
         component: Chats,
         meta: { middleware: "auth" }
-    },
-    { path: "/usercrud", name: "User Crud", component: UserCrud }
+    }
 ];
 
 const router = createRouter({
