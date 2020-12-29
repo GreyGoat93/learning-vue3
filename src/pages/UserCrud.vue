@@ -1,33 +1,33 @@
 <template>
   <div class="cont">
-    <div class="users" v-if="state.users.length !== 0">
+    <div class="users" v-if="state.userLength == 0">
+      <create @get-data="getData()" />
       <div class="user" style="margin-bottom: 0.5em; font-weight: bold">
-        <span class="col-1o3">Email</span>
-        <span class="col-1o3">First Name</span>
-        <span class="col-1o3">Last Name</span>
+        <span class="col-1o4">Avatar</span>
+        <span class="col-1o4">First Name</span>
+        <span class="col-1o4">Last Name</span>
+        <span class="col-1o4">Email</span>
+        <span class="col-1o4">Actions</span>
       </div>
-      <div class="user" v-for="user in state.users" :key="user.id">
-        <span class="col-1o3">{{ user.email }}</span>
-        <span class="col-1o3">{{ user.first_name }}</span>
-        <span class="col-1o3">{{ user.last_name }}</span>
-      </div>
-      <div class="buttons">
-        <div class="button-group">
+      <div class="user" v-for="user in state.users" :key="user._id">
+        <span class="col-1o4"><img class="image" :src="user.avatarURL"/></span>
+        <span class="col-1o4"
+          ><p>{{ user.first_name }}</p></span
+        >
+        <span class="col-1o4"
+          ><p>{{ user.last_name }}</p></span
+        >
+        <span class="col-1o4"
+          ><p>{{ user.email }}</p></span
+        >
+        <span class="col-1o4">
           <button
-            :disabled="state.buttonDelay"
-            v-if="state.page != 1"
-            @click="prevPage"
+            @click="deleteUser(user._id)"
+            @closeModal="state.optionModal = false"
           >
-            Prev
+            Delete
           </button>
-          <button
-            :disabled="state.buttonDelay"
-            v-if="state.page < state.totalPage"
-            @click="nextPage"
-          >
-            Next
-          </button>
-        </div>
+        </span>
       </div>
     </div>
   </div>
@@ -35,23 +35,29 @@
 
 <script>
 import { reactive, onMounted } from "vue";
-import axios from "axios";
+import axios from "../plugins/axios";
+import Create from "../components/userCrud/Create.vue";
 export default {
+  components: { Create },
   setup() {
     const state = reactive({
       users: [],
-      page: 1,
-      totalPage: null,
-      buttonDelay: false
+      userLength: 0,
+      page: 1
+      // buttonDelay: false
     });
 
     function getData() {
       state.buttonDelay = true;
-      axios.get(`https://reqres.in/api/users?page=${state.page}`).then(data => {
-        console.log(data);
-        state.users = { ...data.data.data };
-        state.totalPage = data.data.total_pages;
-        state.buttonDelay = false;
+      axios.get(`users`).then(data => {
+        state.users = { ...data.data };
+        state.userLength = data.data.length;
+      });
+    }
+
+    function deleteUser(id) {
+      axios.delete(`/users/${id}`).then(() => {
+        getData();
       });
     }
 
@@ -69,12 +75,12 @@ export default {
       getData();
     });
 
-    return { state, prevPage, nextPage };
+    return { state, prevPage, nextPage, deleteUser };
   }
 };
 </script>
 
-<style scoped>
+<style>
 .users {
   width: 80%;
   margin: 0 auto;
@@ -84,11 +90,27 @@ export default {
 .user {
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
+  margin: 0.3em 0;
 }
 
-.col-1o3 {
-  width: 33.33333333%;
+.col-1o4 {
+  width: 20%;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.col-1o4 p {
+  margin: 0;
+  padding: 0;
+}
+
+.image {
+  height: 60px;
+  width: 60px;
+  display: block;
 }
 
 .buttons {
@@ -97,10 +119,54 @@ export default {
   justify-content: center;
 }
 
+.options {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.options button,
 .button-group button {
   margin: 0 1em;
   border: none;
   background: black;
   color: white;
+}
+
+.cover-option {
+  width: 100vw;
+  height: 100vh;
+  background: rgba(25, 25, 25);
+  opacity: 25%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 29;
+}
+
+.option-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.option-inside {
+  display: flex;
+  height: 100%;
+}
+
+.option {
+  background: #fff;
+  z-index: 30;
+  margin: auto;
+  min-width: 40%;
+  text-align: center;
+  border: #fff 5px solid;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>
