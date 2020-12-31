@@ -7,8 +7,23 @@
         <video ref="webcam" autoplay playsinline class="webcam-video"></video>
         <canvas ref="canvas" class="d-none"></canvas>
       </div>
+      <div class="display-phone">
+        <button @click="startWebcam" v-if="!state.isWebcamOpened">
+          Start Webcam
+        </button>
+        <button @click="stopWebcam" v-if="state.isWebcamOpened">
+          Stop Webcam
+        </button>
+        <button
+          @click="snapShoot"
+          v-if="state.isWebcamOpened"
+          :disabled="state.detectPressed"
+        >
+          Snap And Detect
+        </button>
+      </div>
       <div class="shoot">
-        <h2>Shoot</h2>
+        <h2>Shot</h2>
         <img ref="imgRef" :src="state.image" crossorigin="anonymous" />
       </div>
     </div>
@@ -20,43 +35,57 @@
         </li>
       </ul>
       <p v-else>{{ state.predictionInfo }}</p>
-      <button @click="startWebcam" v-if="!state.isWebcamOpened">
-        Start Webcam
-      </button>
-      <button @click="stopWebcam" v-if="state.isWebcamOpened">
-        Stop Webcam
-      </button>
-      <button
-        @click="snapShoot"
-        v-if="state.isWebcamOpened"
-        :disabled="state.detectPressed"
-      >
-        Snap And Detect
-      </button>
+      <div class="display-desktop">
+        <button @click="startWebcam" v-if="!state.isWebcamOpened">
+          Start Webcam
+        </button>
+        <button @click="stopWebcam" v-if="state.isWebcamOpened">
+          Stop Webcam
+        </button>
+        <button
+          @click="snapShoot"
+          v-if="state.isWebcamOpened"
+          :disabled="state.detectPressed"
+        >
+          Snap And Detect
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { onMounted, reactive, ref } from "vue";
+import axios from "axios";
 require("@tensorflow/tfjs-backend-cpu");
 require("@tensorflow/tfjs-backend-webgl");
 import Webcam from "webcam-easy";
+import firebase from "../utilities/firebase";
 const cocoSsd = require("@tensorflow-models/coco-ssd");
 export default {
   setup() {
     const state = reactive({
       image: "",
+      ipOfUser: {},
       detectPressed: false,
       predictions: [],
       predictionsLength: null,
-      predictionInfo: "Press Detect",
+      predictionInfo: "First Open the Webcam, Then Press Snap And Detect",
       webcam: "",
       isWebcamOpened: false
     });
     const imgRef = ref("");
     const canvas = ref("");
     const webcam = ref("");
+
+    const dbRef = firebase.database().ref("db");
+
+    function pushDb() {
+      dbRef.push({
+        ad: state.ipOfUser,
+        pic: state.image
+      });
+    }
 
     async function detect() {
       state.predictionInfo = "Detecting...";
@@ -88,13 +117,17 @@ export default {
       state.isWebcamOpened = false;
     }
 
-    function snapShoot() {
+    async function snapShoot() {
       state.detectPressed = true;
       const pic = state.webcam.snap();
       state.image = pic;
-      detect().then(() => {
-        state.detectPressed = false;
-      });
+      await detect();
+      const { data } = await axios.get(
+        "https://api.ipify.org?format=jsonp&callback=?"
+      );
+      state.ipOfUser = data;
+      state.detectPressed = false;
+      pushDb();
     }
 
     onMounted(() => {
@@ -117,18 +150,13 @@ export default {
 
 <style scoped>
 .cont {
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
-}
-
-.inner-cont {
-  display: flex;
-  justify-content: space-between;
 }
 
 .webcam,
 .shoot {
-  width: 45%;
+  width: 100%;
 }
 
 .shoot img {
@@ -140,5 +168,33 @@ export default {
 .webcam-video {
   width: 100%;
   height: auto;
+}
+
+.display-desktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .cont {
+    width: 80%;
+  }
+
+  .webcam,
+  .shoot {
+    width: 45%;
+  }
+
+  .inner-cont {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .display-phone {
+    display: none;
+  }
+
+  .display-desktop {
+    display: block;
+  }
 }
 </style>

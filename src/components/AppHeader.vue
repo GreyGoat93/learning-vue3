@@ -1,17 +1,44 @@
 <template>
   <header>
-    <h1 class="h1"><router-link to="/">App</router-link></h1>
+    <h1 class="h1"><router-link to="/">GreyGoat93</router-link></h1>
     <nav>
-      <router-link v-for="route in routeList" :key="route" :to="route.path">
-        {{ route.name }}
-      </router-link>
+      <div class="display-desktop">
+        <router-link v-for="route in routeList" :key="route" :to="route.path">
+          {{ route.name }}
+        </router-link>
 
-      <button v-if="isLoggedIn == false" @click="openLogin">
-        Login
-      </button>
-      <button v-if="isLoggedIn == true" @click="logout()">
-        Logout
-      </button>
+        <button v-if="isLoggedIn == false" @click="openLogin">
+          Login
+        </button>
+        <button v-if="isLoggedIn == true" @click="logout()">
+          Logout
+        </button>
+      </div>
+      <div class="display-phone">
+        <div class="menu" :class="isExpanded ? 'd-block' : 'd-none'">
+          <ul class="menu-list">
+            <router-link
+              v-for="route in routeList"
+              :key="route"
+              :to="route.path"
+            >
+              <li>{{ route.name }}</li>
+            </router-link>
+          </ul>
+
+          <button v-if="isLoggedIn == false" @click="openLogin">
+            Login
+          </button>
+          <button v-if="isLoggedIn == true" @click="logout()">
+            Logout
+          </button>
+        </div>
+      </div>
+      <div class="menu-expand-shrink">
+        <button class="display-phone" @click="shrinkExpandButton">
+          {{ shrinkExpandMsg }}
+        </button>
+      </div>
     </nav>
   </header>
 </template>
@@ -29,8 +56,10 @@ export default {
         { path: "/calculator", name: "Calculator" },
         { path: "/chats", name: "Chat" },
         { path: "/user-crud", name: "User Crud" },
-        { path: "/tensorflow", name: "Tensorflow" }
-      ]
+        { path: "/tensorflow", name: "Object Detection" }
+      ],
+      shrinkExpandMsg: "Expand the Menu",
+      isExpanded: false
     };
   },
   computed: {
@@ -53,6 +82,13 @@ export default {
     },
     openLogin() {
       this.$store.commit("setToggleLogin", true);
+    },
+    shrinkExpandButton() {
+      if (this.isExpanded) {
+        this.isExpanded = false;
+      } else {
+        this.isExpanded = true;
+      }
     }
   }
 };
@@ -63,12 +99,10 @@ header {
   width: 100%;
   padding: 1.5em;
   background-image: linear-gradient(172deg, #030, #060);
-  display: flex;
-  justify-content: space-between;
 }
 
 h1 {
-  text-align: left;
+  text-align: center;
 }
 
 h1 a {
@@ -80,19 +114,59 @@ h1 a:hover {
   color: #ddd;
 }
 
-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.5em;
+.menu-list {
+  list-style: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 nav a {
   color: white;
-  font-size: 0.5em;
+  font-size: 1em;
   text-decoration: none;
+  margin: 0 0.5em;
 }
 
 nav a:hover {
   color: #ddd;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-none {
+  display: none;
+}
+
+.menu-expand-shrink {
+  color: white;
+  text-align: center;
+}
+
+.display-desktop {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .display-desktop {
+    display: block;
+  }
+
+  .display-phone {
+    display: none;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+  }
 }
 </style>
