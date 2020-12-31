@@ -38,8 +38,8 @@ export default {
   data() {
     return {
       form: {
-        email: "ahmet.tahaa93@gmail.com",
-        password: "boyrazlar11"
+        email: "",
+        password: ""
       },
       isLoading: false
     };
