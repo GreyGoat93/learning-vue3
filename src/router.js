@@ -8,6 +8,7 @@ import Calculator from "./pages/Calculator";
 import Chats from "./pages/Chats";
 import Home from "./pages/Home";
 import UserCrud from "./pages/UserCrud";
+import Tensorflow from "./pages/Tensorflow";
 
 const routes = [
     { path: "/", name: "Home", component: Home },
@@ -17,6 +18,7 @@ const routes = [
     { path: "/slider", name: "Slider", component: Slider },
     { path: "/calculator", name: "Calculator", component: Calculator },
     { path: "/user-crud", name: "UserCrud", component: UserCrud },
+    { path: "/tensorflow", name: "Tensorflow", component: Tensorflow },
     {
         path: "/chats",
         name: "Chats",

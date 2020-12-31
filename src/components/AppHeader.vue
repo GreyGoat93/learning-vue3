@@ -28,7 +28,8 @@ export default {
         { path: "/slider", name: "Slider" },
         { path: "/calculator", name: "Calculator" },
         { path: "/chats", name: "Chat" },
-        { path: "/user-crud", name: "User Crud" }
+        { path: "/user-crud", name: "User Crud" },
+        { path: "/tensorflow", name: "Tensorflow" }
       ]
     };
   },
