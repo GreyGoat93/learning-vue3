@@ -1,32 +1,116 @@
 <template>
   <div class="cont">
-    <h1>Tensorflow</h1>
-    <img
-      ref="imgRef"
-      src="https://images.unsplash.com/photo-1566829965538-fc82e475a2b0"
-      width="200"
-      crossorigin="anonymous"
-    />
+    <h1 style="text-align: center;">Object Detection</h1>
+    <div class="inner-cont">
+      <div class="webcam">
+        <h2>Camera</h2>
+        <video ref="webcam" autoplay playsinline class="webcam-video"></video>
+        <canvas ref="canvas" class="d-none"></canvas>
+      </div>
+      <div class="shoot">
+        <h2>Shoot</h2>
+        <img ref="imgRef" :src="state.image" crossorigin="anonymous" />
+      </div>
+    </div>
+
+    <div class="result" style="width: 20%;">
+      <ul v-if="state.predictionsLength > 0">
+        <li v-for="prediction in state.predictions" :key="prediction">
+          {{ prediction.class }}
+        </li>
+      </ul>
+      <p v-else>{{ state.predictionInfo }}</p>
+      <button @click="startWebcam" v-if="!state.isWebcamOpened">
+        Start Webcam
+      </button>
+      <button @click="stopWebcam" v-if="state.isWebcamOpened">
+        Stop Webcam
+      </button>
+      <button
+        @click="snapShoot"
+        v-if="state.isWebcamOpened"
+        :disabled="state.detectPressed"
+      >
+        Snap And Detect
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 require("@tensorflow/tfjs-backend-cpu");
 require("@tensorflow/tfjs-backend-webgl");
+import Webcam from "webcam-easy";
 const cocoSsd = require("@tensorflow-models/coco-ssd");
 export default {
   setup() {
+    const state = reactive({
+      image: "",
+      detectPressed: false,
+      predictions: [],
+      predictionsLength: null,
+      predictionInfo: "Press Detect",
+      webcam: "",
+      isWebcamOpened: false
+    });
     const imgRef = ref("");
-    onMounted(async () => {
-      console.log(imgRef.value);
+    const canvas = ref("");
+    const webcam = ref("");
+
+    async function detect() {
+      state.predictionInfo = "Detecting...";
+      state.predictions = [];
+      state.predictionsLength = null;
       const img = imgRef.value;
       const model = await cocoSsd.load();
       const predictions = await model.detect(img);
-      console.log("Predictions: ");
-      console.log(predictions);
+      state.predictions = { ...predictions };
+      state.predictionsLength = predictions.length;
+      state.predictionInfo = "Not found :(";
+    }
+
+    function startWebcam() {
+      state.webcam
+        .start()
+        .then(result => {
+          state.isWebcamOpened = true;
+          console.log("webcam started");
+          console.log(result);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+
+    function stopWebcam() {
+      state.webcam.stop();
+      state.isWebcamOpened = false;
+    }
+
+    function snapShoot() {
+      state.detectPressed = true;
+      const pic = state.webcam.snap();
+      state.image = pic;
+      detect().then(() => {
+        state.detectPressed = false;
+      });
+    }
+
+    onMounted(() => {
+      state.webcam = new Webcam(webcam.value, "user", canvas.value);
     });
-    return { imgRef };
+
+    return {
+      imgRef,
+      canvas,
+      webcam,
+      state,
+      detect,
+      startWebcam,
+      stopWebcam,
+      snapShoot
+    };
   }
 };
 </script>
@@ -35,5 +119,26 @@ export default {
 .cont {
   width: 80%;
   margin: 0 auto;
+}
+
+.inner-cont {
+  display: flex;
+  justify-content: space-between;
+}
+
+.webcam,
+.shoot {
+  width: 45%;
+}
+
+.shoot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.webcam-video {
+  width: 100%;
+  height: auto;
 }
 </style>

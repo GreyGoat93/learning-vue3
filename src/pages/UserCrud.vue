@@ -1,7 +1,7 @@
 <template>
   <div class="cont">
-    <div class="users" v-if="state.userLength == 0">
-      <create @get-data="getData()" />
+    <create @get-data="getData" />
+    <div class="users" v-if="state.userLength > 0">
       <div class="user" style="margin-bottom: 0.5em; font-weight: bold">
         <span class="col-1o4">Avatar</span>
         <span class="col-1o4">First Name</span>
@@ -75,7 +75,7 @@ export default {
       getData();
     });
 
-    return { state, prevPage, nextPage, deleteUser };
+    return { state, prevPage, nextPage, deleteUser, getData };
   }
 };
 </script>

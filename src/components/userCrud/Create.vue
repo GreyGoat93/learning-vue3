@@ -37,7 +37,7 @@ import Modal from "../Modal.vue";
 import axios from "../../plugins/axios.js";
 export default {
   components: { Modal },
-  emits: ["get-data"],
+  emits: ["getData"],
   setup(_, { emit }) {
     const state = reactive({
       optionModal: false,
@@ -51,7 +51,7 @@ export default {
 
     function addUser() {
       axios.post("/users", state.form).then(() => {
-        emit("get-data");
+        emit("getData");
         state.form.avatarURL = "";
         state.form.first_name = "";
         state.form.last_name = "";
