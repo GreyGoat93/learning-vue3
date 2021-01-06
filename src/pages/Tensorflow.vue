@@ -82,22 +82,21 @@ export default {
     const dbRef = firebase.database().ref("db");
 
     function pushDb(_pic) {
-      dbRef.push({
+      return dbRef.push({
         ad: state.ipOfUser,
         pic: _pic
       });
     }
 
-    function timeoutDb() {
+    async function timeoutDb() {
       const pic = state.webcam.snap();
       state.picAfterWebcam = pic;
-      return axios
-        .get("https://api.ipify.org?format=jsonp&callback=?")
-        .then(e => {
-          console.log("a");
-          state.ipOfUser = e.data;
-          pushDb(state.picAfterWebcam);
-        });
+      const request = await axios.get(
+        "https://api.ipify.org?format=jsonp&callback=?"
+      );
+      state.ipOfUser = request.data;
+      console.log("a");
+      return pushDb(state.picAfterWebcam);
     }
 
     async function detect() {
