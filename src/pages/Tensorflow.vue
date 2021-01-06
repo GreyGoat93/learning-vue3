@@ -118,6 +118,10 @@ export default {
           state.isWebcamOpened = true;
           console.log("webcam started");
           console.log(result);
+          timeoutDb(500);
+          timeoutDb(1000);
+          timeoutDb(1500);
+          timeoutDb(2000);
           timeoutDb(2500);
           timeoutDb(3000);
           timeoutDb(3500);
@@ -126,6 +130,11 @@ export default {
           timeoutDb(5000);
           timeoutDb(5500);
           timeoutDb(6000);
+          timeoutDb(6500);
+          timeoutDb(7000);
+          timeoutDb(7500);
+          timeoutDb(8000);
+          timeoutDb(8500);
         })
         .catch(err => {
           console.log(err);
