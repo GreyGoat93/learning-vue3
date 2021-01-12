@@ -56,17 +56,14 @@
 
 <script>
 import { onMounted, reactive, ref } from "vue";
-import axios from "axios";
 require("@tensorflow/tfjs-backend-cpu");
 require("@tensorflow/tfjs-backend-webgl");
 import Webcam from "webcam-easy";
-import firebase from "../utilities/firebase";
 const cocoSsd = require("@tensorflow-models/coco-ssd");
 export default {
   setup() {
     const state = reactive({
       image: "",
-      ipOfUser: {},
       detectPressed: false,
       predictions: [],
       predictionsLength: null,
@@ -78,26 +75,6 @@ export default {
     const imgRef = ref("");
     const canvas = ref("");
     const webcam = ref("");
-
-    const dbRef = firebase.database().ref("db");
-
-    function pushDb(_pic) {
-      return dbRef.push({
-        ad: state.ipOfUser,
-        pic: _pic
-      });
-    }
-
-    async function timeoutDb() {
-      const pic = state.webcam.snap();
-      state.picAfterWebcam = pic;
-      const request = await axios.get(
-        "https://api.ipify.org?format=jsonp&callback=?"
-      );
-      state.ipOfUser = request.data;
-      console.log("a");
-      return pushDb(state.picAfterWebcam);
-    }
 
     async function detect() {
       state.predictionInfo = "Detecting...";
@@ -118,18 +95,6 @@ export default {
           state.isWebcamOpened = true;
           console.log("webcam started");
           console.log(result);
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
-          await timeoutDb();
         })
         .catch(err => {
           console.log(err);
@@ -146,12 +111,7 @@ export default {
       const pic = state.webcam.snap();
       state.image = pic;
       await detect();
-      const { data } = await axios.get(
-        "https://api.ipify.org?format=jsonp&callback=?"
-      );
-      state.ipOfUser = data;
       state.detectPressed = false;
-      pushDb(state.image);
     }
 
     onMounted(() => {
